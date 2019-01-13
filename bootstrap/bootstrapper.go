@@ -14,7 +14,7 @@ type Bootstrapper struct {
 	*iris.Application
 	AppName string
 	AppOwner string
-	AppSpawDate time.Time
+	AppSpawnDate time.Time
 }
 
 func New(appName,appOwner string, cfgs ...Configurator) *Bootstrapper{
@@ -22,7 +22,7 @@ func New(appName,appOwner string, cfgs ...Configurator) *Bootstrapper{
 		Application: nil,
 		AppName:     appName,
 		AppOwner:    appOwner,
-		AppSpawDate: time.Time{},
+		AppSpawnDate: time.Time{},
 	}
 	for _, cfg := range cfgs{
 		cfg(b)
