@@ -16,8 +16,8 @@ func NewCodeDao(engine *xorm.Engine) *CodeDao {
 		engine:engine,
 	}
 }
-func (d *CodeDao) Get(id int) *models.LtGift {
-	data := &models.LtGift{Id:id}
+func (d *CodeDao) Get(id int) *models.LtCode {
+	data := &models.LtCode{Id:id}
 	ok, err := d.engine.Get(data)
 	if ok && err != nil{
 		return data
@@ -27,8 +27,8 @@ func (d *CodeDao) Get(id int) *models.LtGift {
 	}
 }
 
-func (d *CodeDao) GetAll() []models.LtGift {
-	datalist := make([]models.LtGift,0)
+func (d *CodeDao) GetAll() []models.LtCode {
+	datalist := make([]models.LtCode,0)
 	err := d.engine.
 		Desc("id").
 		Find(&datalist)
@@ -40,7 +40,7 @@ func (d *CodeDao) GetAll() []models.LtGift {
 }
 
 func (d *CodeDao) CountAll() int64 {
-	num, err := d.engine.Count(&models.LtGift{})
+	num, err := d.engine.Count(&models.LtCode{})
 	if err != nil{
 		return 0
 	}else {
@@ -49,18 +49,18 @@ func (d *CodeDao) CountAll() int64 {
 }
 //软删除
 func (d *CodeDao) Delete(id int) error {
-	data := &models.LtGift{Id:id,Sysstatus:1}
+	data := &models.LtCode{Id:id,Sysstatus:1}
 	_, err := d.engine.Id(data.Id).Update(data)
 	return err
 
 }
 
-func (d *CodeDao) Update(data *models.LtGift, columns []string) error {
+func (d *CodeDao) Update(data *models.LtCode, columns []string) error {
 	_, err := d.engine.Id(data.Id).MustCols(columns...).Update(data)
 	return err
 }
 
-func (d *CodeDao) Create(data *models.LtGift) error {
+func (d *CodeDao) Create(data *models.LtCode) error {
 	_, err := d.engine.Insert(data)
 	return err
 }

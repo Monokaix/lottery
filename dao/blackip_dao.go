@@ -16,8 +16,8 @@ func NewBlackipDao(engine *xorm.Engine) *BlackipDao {
 		engine:engine,
 	}
 }
-func (d *BlackipDao) Get(id int) *models.LtGift {
-	data := &models.LtGift{Id:id}
+func (d *BlackipDao) Get(id int) *models.LtBlackip {
+	data := &models.LtBlackip{Id:id}
 	ok, err := d.engine.Get(data)
 	if ok && err != nil{
 		return data
@@ -27,8 +27,8 @@ func (d *BlackipDao) Get(id int) *models.LtGift {
 	}
 }
 
-func (d *BlackipDao) GetAll() []models.LtGift {
-	datalist := make([]models.LtGift,0)
+func (d *BlackipDao) GetAll() []models.LtBlackip {
+	datalist := make([]models.LtBlackip,0)
 	err := d.engine.
 		Desc("id").
 		Find(&datalist)
@@ -40,7 +40,7 @@ func (d *BlackipDao) GetAll() []models.LtGift {
 }
 
 func (d *BlackipDao) CountAll() int64 {
-	num, err := d.engine.Count(&models.LtGift{})
+	num, err := d.engine.Count(&models.LtBlackip{})
 	if err != nil{
 		return 0
 	}else {
@@ -49,18 +49,18 @@ func (d *BlackipDao) CountAll() int64 {
 }
 //软删除
 func (d *BlackipDao) Delete(id int) error {
-	data := &models.LtGift{Id:id,Sysstatus:1}
+	data := &models.LtBlackip{Id:id,Sysstatus:1}
 	_, err := d.engine.Id(data.Id).Update(data)
 	return err
 
 }
 
-func (d *BlackipDao) Update(data *models.LtGift, columns []string) error {
+func (d *BlackipDao) Update(data *models.LtBlackip, columns []string) error {
 	_, err := d.engine.Id(data.Id).MustCols(columns...).Update(data)
 	return err
 }
 
-func (d *BlackipDao) Create(data *models.LtGift) error {
+func (d *BlackipDao) Create(data *models.LtBlackip) error {
 	_, err := d.engine.Insert(data)
 	return err
 }
