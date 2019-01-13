@@ -4,6 +4,8 @@ import (
 	"github.com/kataras/iris"
 	"myproject/lottery/services"
 	"myproject/lottery/models"
+	"fmt"
+	"myproject/lottery/comm"
 )
 
 type IndexController struct {
@@ -45,4 +47,20 @@ func (c *IndexController) GetNewprize() map[string]interface{} {
 	// TODO:
 
 	return rs
+}
+//登录
+func (c *IndexController) GetLogin() {
+	uid := 88
+	loginuser := models.ObjLoginuser{
+		Uid:uid,
+		Username:fmt.Sprintf("admin-%d",uid),
+		Now:comm.NowUnix(),
+		Ip:comm.ClientIP(c.Ctx.Request()),
+	}
+	comm.SetLoginuser(c.Ctx.ResponseWriter(),&loginuser)
+	comm.Redirect(c.Ctx.ResponseWriter(),"/public/index.html?from=login")
+}
+func (c *IndexController) GetLogout() {
+	comm.SetLoginuser(c.Ctx.ResponseWriter(),nil)
+	comm.Redirect(c.Ctx.ResponseWriter(),"/public/index.html?from=logout")
 }
