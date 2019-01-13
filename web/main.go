@@ -4,6 +4,7 @@ import (
 	"myproject/lottery/bootstrap"
 	"myproject/lottery/web/routes"
 	"fmt"
+	"myproject/lottery/web/middleware/identity"
 )
 
 var port = 8080
