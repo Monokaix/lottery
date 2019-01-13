@@ -34,11 +34,11 @@ func New(appName,appOwner string, cfgs ...Configurator) *Bootstrapper{
 func (b *Bootstrapper) SetupViews(viewDir string) {
 	htmlEngine := iris.HTML(viewDir,".html").Layout("/shared/layout.html")
 	htmlEngine.Reload(true)
-	htmlEngine.AddFunc("FromUnixtimShort", func(t int) string{
+	htmlEngine.AddFunc("FromUnixtimeShort", func(t int) string{
 		dt := time.Unix(int64(t),int64(0))
 		return dt.Format(conf.SysTimeformShort)
 	})
-	htmlEngine.AddFunc("FromUnixtim", func(t int) string{
+	htmlEngine.AddFunc("FromUnixtime", func(t int) string{
 		dt := time.Unix(int64(t),int64(0))
 		return dt.Format(conf.SysTimeform)
 	})
