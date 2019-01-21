@@ -51,7 +51,7 @@ Go抽奖系统
         go get github.com/gomodule/redigo/redis
         go get git.apache.org/thrift.git/lib/go/thrift
 
-#2 大转盘抽奖首页
+#2 抽奖大转盘首页
     http://localhost:8080/public/lucky.html
 
 #M.辅助工具
@@ -64,7 +64,7 @@ Go抽奖系统
 	go get git.apache.org/thrift.git/lib/go/thrift
 
 #生成代码
-	cd /private/var/www/go/src/imooc.com/lottery/thrift
+	cd /private/var/www/go/src/myproject/lottery/thrift
 	thrift -out .. --gen go lucky.thrift
 	thrift -out .. --gen php lucky.thrift
 
