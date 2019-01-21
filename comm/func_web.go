@@ -1,98 +1,104 @@
 package comm
 
 import (
+	"fmt"
+	"log"
 	"net/http"
-	"net"
-	"myproject/lottery/models"
 	"net/url"
 	"strconv"
-	"fmt"
+
+	"myproject/lottery/models"
 	"myproject/lottery/conf"
-	"crypto/md5"
-	"github.com/lunny/log"
+	"net"
 )
 
-func ClientIP(request *http.Request) string{
+// 得到客户端IP地址
+func ClientIP(request *http.Request) string {
 	host, _, _ := net.SplitHostPort(request.RemoteAddr)
 	return host
 }
 
+// 跳转URL
 func Redirect(writer http.ResponseWriter, url string) {
-	writer.Header().Add("Location",url)
+	writer.Header().Add("Location", url)
 	writer.WriteHeader(http.StatusFound)
 }
 
-//获取cookie
-func GetLoginUser(request *http.Request) *models.ObjLoginuser  {
+// 从cookie中得到当前登录的用户
+func GetLoginUser(request *http.Request) *models.ObjLoginuser {
 	c, err := request.Cookie("lottery_loginuser")
-	if err != nil{
+	if err != nil {
 		return nil
 	}
 	params, err := url.ParseQuery(c.Value)
-	if err != nil{
+	if err != nil {
 		return nil
 	}
 	uid, err := strconv.Atoi(params.Get("uid"))
 	if err != nil || uid < 1 {
 		return nil
 	}
+	// Cookie最长使用时长
 	now, err := strconv.Atoi(params.Get("now"))
-	if err != nil || NowUnix() -now > 86400*30{
+	if err != nil || NowUnix()-now > 86400*30 {
 		return nil
 	}
-
+	//// IP修改了是不是要重新登录
+	//ip := params.Get("ip")
+	//if ip != ClientIP(request) {
+	//	return nil
+	//}
+	// 登录信息
 	loginuser := &models.ObjLoginuser{}
 	loginuser.Uid = uid
 	loginuser.Username = params.Get("username")
 	loginuser.Now = now
 	loginuser.Ip = ClientIP(request)
 	loginuser.Sign = params.Get("sign")
-	//判断签名是否正确
-	sign := createLoginuserSign(loginuser)
-	if sign != loginuser.Sign{
-		log.Println("func_web GetLoginuser createLoginuserSign not signed",
-			sign,loginuser.Sign)
+	if err != nil {
+		log.Println("fuc_web GetLoginUser Unmarshal ", err)
 		return nil
 	}
+	sign := createLoginuserSign(loginuser)
+	if sign != loginuser.Sign {
+		log.Println("fuc_web GetLoginUser createLoginuserSign not sign", sign, loginuser.Sign)
+		return nil
+	}
+
 	return loginuser
 }
 
-//设置cookie
+// 将登录的用户信息设置到cookie中
 func SetLoginuser(writer http.ResponseWriter, loginuser *models.ObjLoginuser) {
 	if loginuser == nil || loginuser.Uid < 1 {
-		//清除cookie
 		c := &http.Cookie{
-			Name :"lottery_loginuser",
-			Value:"",
-			Path:"/",
-			MaxAge:-1,
+			Name:   "lottery_loginuser",
+			Value:  "",
+			Path:   "/",
+			MaxAge: -1,
 		}
-		http.SetCookie(writer,c)
+		http.SetCookie(writer, c)
 		return
 	}
 	if loginuser.Sign == "" {
 		loginuser.Sign = createLoginuserSign(loginuser)
 	}
-	//构造参数
 	params := url.Values{}
-	params.Add("uid",strconv.Itoa(loginuser.Uid))
-	params.Add("username",loginuser.Username)
-	params.Add("now",strconv.Itoa(loginuser.Now))
-	params.Add("ip",loginuser.Ip)
-	params.Add("sign",loginuser.Sign)
-	//设置有效的cookie
+	params.Add("uid", strconv.Itoa(loginuser.Uid))
+	params.Add("username", loginuser.Username)
+	params.Add("now", strconv.Itoa(loginuser.Now))
+	params.Add("ip", loginuser.Ip)
+	params.Add("sign", loginuser.Sign)
 	c := &http.Cookie{
-		Name:"lottery_loginuser",
-		Value:params.Encode(),
-		Path:"/",
+		Name:  "lottery_loginuser",
+		Value: params.Encode(),
+		Path:  "/",
 	}
-	http.SetCookie(writer,c)
-
+	http.SetCookie(writer, c)
 }
-//创建签名
+
+// 根据登录用户信息生成加密字符串
 func createLoginuserSign(loginuser *models.ObjLoginuser) string {
-	str := fmt.Sprintf("uid=%d&username=%ssecret=%s&now=%d",loginuser.Uid,
-		loginuser.Username,conf.CookieSecret,loginuser.Sign)
-	sign := fmt.Sprintf("%x",md5.Sum([]byte(str)))
-	return sign
+	str := fmt.Sprintf("uid=%d&username=%s&secret=%s", loginuser.Uid, loginuser.Username, conf.CookieSecret)
+	return CreateSign(str)
 }
