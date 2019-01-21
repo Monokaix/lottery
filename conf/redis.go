@@ -1,13 +1,15 @@
 package conf
 
-type RDsConfig struct {
+type RdsConfig struct {
 	Host      string
 	Port      int
 	User      string
 	Pwd       string
-	IsRunning bool
-} 
-var RDsCacheList = []RDsConfig{
+	IsRunning bool // 是否正常运行
+}
+
+// 系统中用到的所有redis缓存资源
+var RdsCacheList = []RdsConfig{
 	{
 		Host:      "127.0.0.1",
 		Port:      6379,
@@ -17,4 +19,4 @@ var RDsCacheList = []RDsConfig{
 	},
 }
 
-var RDsCache = RDsCacheList[0]
+var RdsCache RdsConfig = RdsCacheList[0]
