@@ -1,17 +1,25 @@
+/**
+ * 抽奖系统数据处理（包括数据库，也包括缓存等其他形式数据）
+ */
 package services
 
 import (
-	"myproject/lottery/models"
 	"myproject/lottery/dao"
+	"myproject/lottery/datasource"
+	"myproject/lottery/models"
 )
 
 type CodeService interface {
-	GetAll() []models.LtCode
+	GetAll(page, size int) []models.LtCode
 	CountAll() int64
+	CountByGift(giftId int) int64
+	Search(giftId int) []models.LtCode
 	Get(id int) *models.LtCode
 	Delete(id int) error
-	Update(data *models.LtCode, columns []string) error
-	Create(data *models.LtCode) error
+	Update(user *models.LtCode, columns []string) error
+	Create(user *models.LtCode) error
+	NextUsingCode(giftId, codeId int) *models.LtCode
+	UpdateByCode(data *models.LtCode, columns []string) error
 }
 
 type codeService struct {
@@ -20,24 +28,46 @@ type codeService struct {
 
 func NewCodeService() CodeService {
 	return &codeService{
-		dao:dao.NewCodeDao(nil),
+		dao: dao.NewCodeDao(datasource.InstanceDbMaster()),
 	}
 }
-func (c *codeService) GetAll() []models.LtCode {
-	return c.dao.GetAll()
+
+func (s *codeService) GetAll(page, size int) []models.LtCode {
+	return s.dao.GetAll(page, size)
 }
-func (c *codeService) CountAll() int64 {
-	return c.dao.CountAll()
+
+func (s *codeService) CountAll() int64 {
+	return s.dao.CountAll()
 }
-func (c *codeService) Get(id int) *models.LtCode {
-	return c.dao.Get(id)
+
+func (s *codeService) CountByGift(giftId int) int64 {
+	return s.dao.CountByGift(giftId)
 }
-func (c *codeService) Delete(id int) error {
-	return c.dao.Delete(id)
+
+func (s *codeService) Search(giftId int) []models.LtCode {
+	return s.dao.Search(giftId)
 }
-func (c *codeService) Update(data *models.LtCode, columns []string) error {
-	return c.dao.Update(data, columns)
+
+func (s *codeService) Get(id int) *models.LtCode {
+	return s.dao.Get(id)
 }
-func (c *codeService) Create(data *models.LtCode) error {
-	return c.dao.Create(data)
+
+func (s *codeService) Delete(id int) error {
+	return s.dao.Delete(id)
+}
+
+func (s *codeService) Update(data *models.LtCode, columns []string) error {
+	return s.dao.Update(data, columns)
+}
+
+func (s *codeService) Create(data *models.LtCode) error {
+	return s.dao.Create(data)
+}
+
+func (s *codeService) NextUsingCode(giftId, codeId int) *models.LtCode {
+	return s.dao.NextUsingCode(giftId, codeId)
+}
+
+func (s *codeService) UpdateByCode(data *models.LtCode, columns []string) error {
+	return s.dao.UpdateByCode(data, columns)
 }
