@@ -1,13 +1,13 @@
 package models
 
 type LtUser struct {
-	Id         int    `xorm:"not null pk autoincr comment('主键') INT(11)"`
-	Username   string `xorm:"comment('用户名') VARCHAR(50)"`
-	Blacktime  int    `xorm:"comment('黑名单限制到期时间') INT(11)"`
-	Realname   string `xorm:"comment('联系人') VARCHAR(255)"`
-	Mobile     string `xorm:"comment('手机号') VARCHAR(50)"`
-	Address    string `xorm:"comment('联系地址') VARCHAR(255)"`
-	SysCreated int    `xorm:"comment('创建时间') INT(11)"`
-	SysUpdated int    `xorm:"comment('更新时间') INT(11)"`
-	SysIp      string `xorm:"comment('ip地址') VARCHAR(50)"`
+	Id         int    `xorm:"not null pk autoincr INT(10)"`
+	Username   string `xorm:"not null default '' comment('用户名') VARCHAR(50)"`
+	Blacktime  int    `xorm:"not null default 0 comment('黑名单限制到期时间') INT(10)"`
+	Realname   string `xorm:"not null default '' comment('联系人') VARCHAR(50)"`
+	Mobile     string `xorm:"not null default '' comment('手机号') VARCHAR(50)"`
+	Address    string `xorm:"not null default '' comment('联系地址') VARCHAR(255)"`
+	SysCreated int    `xorm:"not null default 0 comment('创建时间') INT(10)"`
+	SysUpdated int    `xorm:"not null default 0 comment('修改时间') INT(10)"`
+	SysIp      string `xorm:"not null default '' comment('IP地址') VARCHAR(50)"`
 }

@@ -1,10 +1,10 @@
 package models
 
 type LtUserday struct {
-	Id         int `xorm:"not null pk autoincr comment('主键') INT(11)"`
-	Uid        int `xorm:"comment('用户id') INT(11)"`
-	Day        int `xorm:"comment('日期') INT(11)"`
-	Num        int `xorm:"comment('次数') INT(11)"`
-	SysCreated int `xorm:"comment('创建时间') INT(11)"`
-	SysUpdated int `xorm:"comment('更新时间') INT(11)"`
+	Id         int `xorm:"not null pk autoincr INT(10)"`
+	Uid        int `xorm:"not null default 0 comment('用户ID') INT(10)"`
+	Day        int `xorm:"not null default 0 comment('日期，如：20180725') INT(10)"`
+	Num        int `xorm:"not null default 0 comment('次数') INT(10)"`
+	SysCreated int `xorm:"not null default 0 comment('创建时间') INT(10)"`
+	SysUpdated int `xorm:"not null default 0 comment('修改时间') INT(10)"`
 }
