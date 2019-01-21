@@ -9,20 +9,20 @@ import (
 type AdminController struct {
 	Ctx iris.Context
 	ServiceUser services.UserService
-	ServiceBlackip services.BlackipService
-	ServiceCode services.CodeService
 	ServiceGift services.GiftService
+	ServiceCode services.CodeService
 	ServiceResult services.ResultService
 	ServiceUserday services.UserdayService
+	ServiceBlackip services.BlackipService
 }
 
-func (c *AdminController) Get() mvc.Result{
+func (c *AdminController) Get() mvc.Result {
 	return mvc.View{
-		Name:"admin/index.html",
-		Data:iris.Map{
-			"Title":"管理后台",
+		Name: "admin/index.html",
+		Data: iris.Map{
+			"Title": "管理后台",
 			"Channel":"",
 		},
-		Layout:"admin/layout.html",
+		Layout: "admin/layout.html",
 	}
 }
